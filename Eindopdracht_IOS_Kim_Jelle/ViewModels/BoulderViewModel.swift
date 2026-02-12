@@ -1,5 +1,6 @@
-import Foundation
-internal import Combine
+import SwiftUI
+import Combine
+
 @MainActor
 final class BoulderViewModel: ObservableObject {
 

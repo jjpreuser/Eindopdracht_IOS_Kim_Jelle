@@ -1,5 +1,6 @@
 import Foundation
-internal import Combine
+import Combine
+
 @MainActor
 final class AreaViewModel: ObservableObject {
 
@@ -9,6 +10,10 @@ final class AreaViewModel: ObservableObject {
     private let service = OpenBetaService()
 
     func search(name: String) async {
+        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            areas = []
+            return
+        }
         isLoading = true
         do {
             areas = try await service.searchAreas(name: name)
