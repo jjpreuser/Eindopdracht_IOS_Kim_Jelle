@@ -22,26 +22,31 @@ struct LogBookView: View {
             }
 
             ForEach(viewModel.tops) { top in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(top.boulderName)
-                            .font(.headline)
-                        Text("Grade: \(top.grade)")
-                            .font(.subheadline)
-                        Text(top.date.formatted(date: .abbreviated, time: .omitted))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                NavigationLink(destination:
+                    EditTopView(top: top)
+                        .environmentObject(viewModel)
+                ) {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(top.boulderName)
+                                .font(.headline)
+
+                            Text("Grade: \(top.grade)")
+                                .font(.subheadline)
+
+                            Text(top.date.formatted(date: .abbreviated, time: .omitted))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "square.and.pencil")
                     }
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: EditTopView(top: top)
-                                    .environmentObject(viewModel)) {
-                    }
-                    .buttonStyle(.borderless) // ensures clean tappable area
+                    .padding(.vertical, 4)
                 }
-                .padding(.vertical, 4)
             }
+
 
 
             .onDelete { offsets in
