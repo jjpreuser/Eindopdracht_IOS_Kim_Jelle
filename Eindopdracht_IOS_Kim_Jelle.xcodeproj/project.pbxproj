@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		50FD9AD12F3DE04100F0FD12 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 50FD9ACF2F3DE03900F0FD12 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		50FD9AC12F3DDE7E00F0FD12 /* Eindopdracht_IOS_Kim_Jelle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eindopdracht_IOS_Kim_Jelle.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		50FD9ACF2F3DE03900F0FD12 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +39,7 @@
 			children = (
 				50FD9AC32F3DDE7E00F0FD12 /* Eindopdracht_IOS_Kim_Jelle */,
 				50FD9AC22F3DDE7E00F0FD12 /* Products */,
+				50FD9ACF2F3DE03900F0FD12 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50FD9AD12F3DE04100F0FD12 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
