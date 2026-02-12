@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BoulderListView: View {
     let area: Area
-
+    @EnvironmentObject var logbookVM: LogbookViewModel
     @StateObject private var viewModel = BoulderViewModel()
 
     var body: some View {
@@ -22,23 +22,29 @@ struct BoulderListView: View {
             }
 
             ForEach(viewModel.boulders) { boulder in
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(boulder.name)
-                        .font(.headline)
-                    HStack(spacing: 12) {
-                        if let v = boulder.grades?.vscale, !v.isEmpty {
-                            Label(v, systemImage: "bolt.fill")
-                                .labelStyle(.titleAndIcon)
-                                .foregroundStyle(.secondary)
+                NavigationLink {
+                    BoulderDetailView(boulder: boulder)
+                        .environmentObject(logbookVM)
+                } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(boulder.name)
+                            .font(.headline)
+
+                        HStack(spacing: 12) {
+                            if let v = boulder.grades?.vscale, !v.isEmpty {
+                                Label(v, systemImage: "bolt.fill")
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            if let type = boulder.type, !type.isEmpty {
+                                Text(type.capitalized)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                        if let type = boulder.type, !type.isEmpty {
-                            Text(type.capitalized)
-                                .foregroundStyle(.secondary)
-                        }
+                        .font(.subheadline)
                     }
-                    .font(.subheadline)
+                    .padding(.vertical, 4)
                 }
-                .padding(.vertical, 4)
             }
         }
         .navigationTitle(area.area_name)
@@ -47,6 +53,7 @@ struct BoulderListView: View {
         }
     }
 }
+
 
 #Preview {
     NavigationStack {
