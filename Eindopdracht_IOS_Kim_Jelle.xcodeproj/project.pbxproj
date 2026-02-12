@@ -16,7 +16,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		50FD9AC32F3DDE7E00F0FD12 /* Eindopdracht_IOS_Kim_Jelle */ = {
+		50FD9ADD2F3DE6B400F0FD12 /* Eindopdracht_IOS_Kim_Jelle */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Eindopdracht_IOS_Kim_Jelle;
 			sourceTree = "<group>";
@@ -37,9 +37,9 @@
 		50FD9AB82F3DDE7E00F0FD12 = {
 			isa = PBXGroup;
 			children = (
-				50FD9AC32F3DDE7E00F0FD12 /* Eindopdracht_IOS_Kim_Jelle */,
 				50FD9AC22F3DDE7E00F0FD12 /* Products */,
 				50FD9ACF2F3DE03900F0FD12 /* .gitignore */,
+				50FD9ADD2F3DE6B400F0FD12 /* Eindopdracht_IOS_Kim_Jelle */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,7 +67,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				50FD9AC32F3DDE7E00F0FD12 /* Eindopdracht_IOS_Kim_Jelle */,
+				50FD9ADD2F3DE6B400F0FD12 /* Eindopdracht_IOS_Kim_Jelle */,
 			);
 			name = Eindopdracht_IOS_Kim_Jelle;
 			packageProductDependencies = (
