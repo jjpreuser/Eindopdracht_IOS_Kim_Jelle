@@ -22,23 +22,28 @@ struct LogBookView: View {
             }
 
             ForEach(viewModel.tops) { top in
-                NavigationLink {
-                    EditTopView(top: top)
-                        .environmentObject(viewModel)
-                } label: {
+                HStack {
                     VStack(alignment: .leading) {
                         Text(top.boulderName)
                             .font(.headline)
-
                         Text("Grade: \(top.grade)")
                             .font(.subheadline)
-
                         Text(top.date.formatted(date: .abbreviated, time: .omitted))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: EditTopView(top: top)
+                                    .environmentObject(viewModel)) {
+                    }
+                    .buttonStyle(.borderless) // ensures clean tappable area
                 }
+                .padding(.vertical, 4)
             }
+
+
             .onDelete { offsets in
                 Task {
                     await viewModel.delete(at: offsets)
@@ -47,10 +52,12 @@ struct LogBookView: View {
         }
         .navigationTitle("Logbook")
         .toolbar {
-            EditButton()
-        }
-        .task {
-            await viewModel.load()
+            NavigationLink {
+                AddTopView()
+                    .environmentObject(viewModel)
+            } label: {
+                Image(systemName: "plus")
+            }
         }
     }
 }

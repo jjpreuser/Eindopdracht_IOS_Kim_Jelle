@@ -26,6 +26,14 @@ final class LogbookViewModel: ObservableObject {
         await save()
     }
 
+    // Added convenience method to delete by TopLog
+    func delete(top: TopLog) async {
+        if let index = tops.firstIndex(where: { $0.id == top.id }) {
+            tops.remove(at: index)
+            await save()
+        }
+    }
+
     func update(top: TopLog) async {
         if let index = tops.firstIndex(where: { $0.id == top.id }) {
             tops[index] = top

@@ -6,6 +6,7 @@ struct EditTopView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State var top: TopLog
+    @State private var showDeleteAlert = false
 
     var body: some View {
         Form {
@@ -18,15 +19,12 @@ struct EditTopView: View {
 
             Section("Details") {
                 DatePicker("Date", selection: $top.date, displayedComponents: .date)
-
                 Stepper("Attempts: \(top.attempts)",
                         value: $top.attempts,
                         in: 1...100)
-
                 Stepper("Rating: \(top.rating)",
                         value: $top.rating,
                         in: 1...5)
-
                 TextField("Notes", text: $top.notes, axis: .vertical)
             }
 
@@ -39,8 +37,26 @@ struct EditTopView: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
+
+            Section {
+                Button("Delete Top") {
+                    showDeleteAlert = true
+                }
+                .foregroundColor(.red)
+            }
         }
         .navigationTitle("Edit Top")
+        // ALERT is centered properly by default
+        .alert("Delete this top?", isPresented: $showDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    await logbookVM.delete(top: top)
+                    dismiss()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This action cannot be undone.")
+        }
     }
 }
-
