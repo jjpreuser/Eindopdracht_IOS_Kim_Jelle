@@ -1,3 +1,5 @@
+import Foundation
+
 struct Boulder: Identifiable, Codable {
     let id = UUID()
     let uuid: String
@@ -7,5 +9,12 @@ struct Boulder: Identifiable, Codable {
 
     struct Grades: Codable {
         let vscale: String?
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case uuid
+        case name
+        case grades
+        case type
     }
 }

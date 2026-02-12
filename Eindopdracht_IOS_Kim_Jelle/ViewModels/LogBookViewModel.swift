@@ -1,3 +1,6 @@
+import SwiftUI
+internal import Combine
+
 @MainActor
 final class LogbookViewModel: ObservableObject {
 

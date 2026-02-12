@@ -1,3 +1,5 @@
+import Foundation
+internal import Combine
 @MainActor
 final class BoulderViewModel: ObservableObject {
 

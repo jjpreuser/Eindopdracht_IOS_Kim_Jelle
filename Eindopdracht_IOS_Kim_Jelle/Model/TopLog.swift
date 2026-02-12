@@ -1,3 +1,5 @@
+import Foundation
+
 struct TopLog: Identifiable, Codable {
     var id: UUID
     var boulderId: String
