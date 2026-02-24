@@ -9,4 +9,5 @@ struct TopLog: Identifiable, Codable {
     var attempts: Int
     var rating: Int
     var notes: String
+    var photoFileName: String? = nil
 }

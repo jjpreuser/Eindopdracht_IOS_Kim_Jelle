@@ -1,8 +1,11 @@
 import SwiftUI
+import PhotosUI
 
 struct AddTopView: View {
     @EnvironmentObject var logbookVM: LogbookViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedPhoto: PhotosPickerItem? = nil
+    @State private var image: UIImage? = nil
 
     @State private var top = TopLog(
         id: UUID(), boulderId: "",        boulderName: "",
@@ -46,16 +49,41 @@ struct AddTopView: View {
                 Stepper("Rating: \(top.rating)", value: $top.rating, in: 1...5)
                 TextField("Notes", text: $top.notes, axis: .vertical)
             }
+            
+            Section("Photo") {
+                if let image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .cornerRadius(10)
+                }
+                
+                PhotosPicker(
+                    selection: $selectedPhoto,
+                    matching: .images,
+                    photoLibrary: .shared()) {
+                        Text(image == nil ? "Add Photo" : "Change Photo")
+                    }
+                    .onChange(of: selectedPhoto) { newItem in
+                        Task {
+                            if let data = try? await newItem?.loadTransferable(type: Data.self),
+                               let uiImage = UIImage(data: data) {
+                                image = uiImage
+                            }
+                        }
+                    }
+            }
 
             Section {
                 Button("Add Top") {
                     Task {
-                        await logbookVM.add(top: top)
+                        await logbookVM.add(top: top, image: image)
                         dismiss()
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(!isFormValid) // DISABLE BUTTON if mandatory fields empty
+                .disabled(!isFormValid)
             }
         }
         .navigationTitle("Add Top")

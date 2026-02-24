@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 struct EditTopView: View {
 
@@ -7,10 +8,19 @@ struct EditTopView: View {
 
     @State var top: TopLog
     @State private var showDeleteAlert = false
-
+    @State private var selectedPhoto: PhotosPickerItem? = nil
+    @State private var image: UIImage? = nil
+    
+    init(top: TopLog) {
+        self._top = State(initialValue: top)
+        if let fileName = top.photoFileName,
+            let uiImage = ImageStorageService.shared.loadImage(fileName: fileName) {
+            self._image = State(initialValue: uiImage)
+        }
+    }
+    
     var body: some View {
         Form {
-
             Section("Boulder") {
                 Text(top.boulderName)
                 Text("Grade: \(top.grade)")
@@ -27,11 +37,36 @@ struct EditTopView: View {
                         in: 1...5)
                 TextField("Notes", text: $top.notes, axis: .vertical)
             }
+            
+            Section("Photo") {
+                if let image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .cornerRadius(10)
+                }
+
+                PhotosPicker(
+                    selection: $selectedPhoto,
+                        matching: .images,
+                        photoLibrary: .shared()) {
+                            Text(image == nil ? "Add Photo" : "Change Photo")
+                        }
+                        .onChange(of: selectedPhoto) { newItem in
+                            Task {
+                                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                                   let uiImage = UIImage(data: data) {
+                                    image = uiImage
+                                }
+                            }
+                        }
+                }
 
             Section {
                 Button("Save Changes") {
                     Task {
-                        await logbookVM.update(top: top)
+                        await logbookVM.update(top: top, image: image)
                         dismiss()
                     }
                 }

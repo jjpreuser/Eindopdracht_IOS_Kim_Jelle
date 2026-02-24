@@ -20,11 +20,16 @@ struct LogBookView: View {
                         .environmentObject(viewModel)
                 ) {
                     HStack {
+                        if let fileName = top.photoFileName,
+                           let uiImage = ImageStorageService.shared.loadImage(fileName: fileName) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .cornerRadius(6)
+                        }
                         VStack(alignment: .leading) {
-                            Text(top.boulderName)
-                                .font(.headline)
-                            Text("Grade: \(top.grade)")
-                                .font(.subheadline)
+                            Text(top.boulderName).font(.headline)
+                            Text("Grade: \(top.grade)").font(.subheadline)
                             Text(top.date.formatted(date: .abbreviated, time: .omitted))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

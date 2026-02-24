@@ -22,8 +22,18 @@ final class LogbookViewModel: ObservableObject {
         }
     }
 
-    func add(top: TopLog) async {
-        tops.append(top)
+    func add(top: TopLog, image: UIImage?) async {
+        var newTop = top
+        if let image {
+            let fileName = "\(top.id.uuidString).jpg"
+            do {
+                try ImageStorageService.shared.saveImage(image, with: fileName)
+                newTop.photoFileName = fileName
+            } catch {
+                print("Error saving image:", error)
+            }
+        }
+        tops.insert(newTop, at: 0) // nieuwste eerst
         await save()
     }
 
@@ -40,9 +50,19 @@ final class LogbookViewModel: ObservableObject {
         }
     }
 
-    func update(top: TopLog) async {
+    func update(top: TopLog, image: UIImage?) async {
+        var updatedTop = top
+        if let image {
+            let fileName = "\(top.id.uuidString).jpg"
+            do {
+                try ImageStorageService.shared.saveImage(image, with: fileName)
+                updatedTop.photoFileName = fileName
+            } catch {
+                print("Error saving image:", error)
+            }
+        }
         if let index = tops.firstIndex(where: { $0.id == top.id }) {
-            tops[index] = top
+            tops[index] = updatedTop
             await save()
         }
     }
