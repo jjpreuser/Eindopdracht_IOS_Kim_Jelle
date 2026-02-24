@@ -16,7 +16,8 @@ final class LogbookViewModel: ObservableObject {
 
     func load() async {
         do {
-            tops = try await storage.load()
+            let loaded = try await storage.load()
+            tops = loaded.sorted { $0.date > $1.date } // nieuwste eerst
         } catch {
             print("Failed to load tops:", error)
         }
@@ -33,7 +34,7 @@ final class LogbookViewModel: ObservableObject {
                 print("Error saving image:", error)
             }
         }
-        tops.insert(newTop, at: 0) // nieuwste eerst
+        tops.insert(newTop, at: 0)
         await save()
     }
 
@@ -42,8 +43,11 @@ final class LogbookViewModel: ObservableObject {
         await save()
     }
 
-    // Added convenience method to delete by TopLog
     func delete(top: TopLog) async {
+        if let fileName = top.photoFileName {
+            try? ImageStorageService.shared.deleteImage(fileName: fileName)
+        }
+
         if let index = tops.firstIndex(where: { $0.id == top.id }) {
             tops.remove(at: index)
             await save()
@@ -52,7 +56,13 @@ final class LogbookViewModel: ObservableObject {
 
     func update(top: TopLog, image: UIImage?) async {
         var updatedTop = top
-        if let image {
+
+        if image == nil {
+            if let fileName = top.photoFileName {
+                try? ImageStorageService.shared.deleteImage(fileName: fileName)
+            }
+            updatedTop.photoFileName = nil
+        } else if let image {
             let fileName = "\(top.id.uuidString).jpg"
             do {
                 try ImageStorageService.shared.saveImage(image, with: fileName)
@@ -61,10 +71,13 @@ final class LogbookViewModel: ObservableObject {
                 print("Error saving image:", error)
             }
         }
+
         if let index = tops.firstIndex(where: { $0.id == top.id }) {
             tops[index] = updatedTop
-            await save()
         }
+
+        tops.sort { $0.date > $1.date }
+        await save()
     }
 
     private func save() async {

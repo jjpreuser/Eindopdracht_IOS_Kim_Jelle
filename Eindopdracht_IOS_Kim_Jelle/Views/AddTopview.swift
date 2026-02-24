@@ -23,20 +23,12 @@ struct AddTopView: View {
 
     var body: some View {
         Form {
-            Section(header:
-                HStack {
-                    Text("Boulder")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                }
-            ) {
+            Section("Boulder") {
                 TextField("Boulder Name (required)", text: $top.boulderName)
                     .autocapitalization(.words)
                 TextField("Grade (required)", text: $top.grade)
                     .autocapitalization(.allCharacters)
-                
-                if top.boulderName.trimmingCharacters(in: .whitespaces).isEmpty ||
-                   top.grade.trimmingCharacters(in: .whitespaces).isEmpty {
+                if !isFormValid {
                     Text("Please fill in both fields to continue.")
                         .foregroundColor(.red)
                         .font(.caption)
@@ -49,30 +41,36 @@ struct AddTopView: View {
                 Stepper("Rating: \(top.rating)", value: $top.rating, in: 1...5)
                 TextField("Notes", text: $top.notes, axis: .vertical)
             }
-            
+
             Section("Photo") {
                 if let image {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 200)
+                        .frame(maxHeight: 200)
                         .cornerRadius(10)
                 }
-                
+
                 PhotosPicker(
                     selection: $selectedPhoto,
                     matching: .images,
-                    photoLibrary: .shared()) {
-                        Text(image == nil ? "Add Photo" : "Change Photo")
+                    photoLibrary: .shared()
+                ) {
+                    Label(image == nil ? "Add Photo" : "Change Photo", systemImage: "photo")
+                        .labelStyle(.titleAndIcon)
+                }
+            }
+
+            if image != nil {
+                Section {
+                    Button(role: .destructive) {
+                        image = nil
+                        top.photoFileName = nil
+                        selectedPhoto = nil
+                    } label: {
+                        Label("Remove Photo", systemImage: "trash")
                     }
-                    .onChange(of: selectedPhoto) { newItem in
-                        Task {
-                            if let data = try? await newItem?.loadTransferable(type: Data.self),
-                               let uiImage = UIImage(data: data) {
-                                image = uiImage
-                            }
-                        }
-                    }
+                }
             }
 
             Section {
@@ -87,5 +85,18 @@ struct AddTopView: View {
             }
         }
         .navigationTitle("Add Top")
+        .onChange(of: selectedPhoto) { _, newItem in
+            loadImage(from: newItem)
+        }
+    }
+
+    private func loadImage(from item: PhotosPickerItem?) {
+        guard let item else { return }
+        Task {
+            if let data = try? await item.loadTransferable(type: Data.self),
+                let uiImage = UIImage(data: data) {
+                await MainActor.run { image = uiImage }
+            }
+        }
     }
 }

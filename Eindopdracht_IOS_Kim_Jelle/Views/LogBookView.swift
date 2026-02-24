@@ -14,7 +14,7 @@ struct LogBookView: View {
                 )
             }
 
-            ForEach(viewModel.tops.reversed()) { top in
+            ForEach(viewModel.tops) { top in
                 NavigationLink(destination:
                     EditTopView(top: top)
                         .environmentObject(viewModel)
@@ -40,11 +40,9 @@ struct LogBookView: View {
                     .padding(.vertical, 4)
                 }
             }
-
             .onDelete { offsets in
                 Task {
-                    let actualOffsets = IndexSet(offsets.map { viewModel.tops.count - 1 - $0 })
-                    await viewModel.delete(at: actualOffsets)
+                    await viewModel.delete(at: offsets)
                 }
             }
         }
