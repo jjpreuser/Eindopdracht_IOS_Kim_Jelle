@@ -1,22 +1,26 @@
 import Foundation
 import Combine
 
-class KNMIService {
-    private let apiKey = "2071d0d1af"
-    
-    func fetchForecast() -> AnyPublisher<String, Error> {
-        // replace {datasetName}/versions/{version}/files/{filename}
-        let urlString = "https://api.dataplatform.knmi.nl/open-data/v1/datasets/outlook_weather_forecast/versions/1.0/files/outlook_weather_forecast.txt"
+class WeerLiveService {
+    private let apiKey = "2071d0d1af" 
+
+    func fetchWeather(for location: String) -> AnyPublisher<WeatherResponse, Error> {
+        let encodedLocation = location.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? location
+        let urlString = "https://weerlive.nl/api/weerlive_api_v2.php?key=\(apiKey)&locatie=\(encodedLocation)"
+
         guard let url = URL(string: urlString) else {
-            return Fail(error: URLError(.badURL)).mapError { $0 as Error }.eraseToAnyPublisher()
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-        
-        var request = URLRequest(url: url)
-        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
-        
-        return URLSession.shared.dataTaskPublisher(for: request)
-            .map { data, _ in String(decoding: data, as: UTF8.self) }
-            .mapError { $0 as Error }
+
+        return URLSession.shared.dataTaskPublisher(for: url)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse,
+                      200..<300 ~= httpResponse.statusCode else {
+                    throw URLError(.badServerResponse)
+                }
+                return data
+            }
+            .decode(type: WeatherResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
