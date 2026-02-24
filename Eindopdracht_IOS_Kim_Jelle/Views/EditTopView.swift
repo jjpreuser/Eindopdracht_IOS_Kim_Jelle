@@ -46,7 +46,6 @@ struct EditTopView: View {
             }
         }
         .navigationTitle("Edit Top")
-        // ALERT is centered properly by default
         .alert("Delete this top?", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
                 Task {

@@ -7,12 +7,18 @@ final class LogbookViewModel: ObservableObject {
     @Published var tops: [TopLog] = []
 
     private let storage = TopStorageService()
+    
+    init() {
+            Task {
+                await load()
+            }
+        }
 
     func load() async {
         do {
             tops = try await storage.load()
         } catch {
-            print(error)
+            print("Failed to load tops:", error)
         }
     }
 
@@ -45,7 +51,7 @@ final class LogbookViewModel: ObservableObject {
         do {
             try await storage.save(tops)
         } catch {
-            print(error)
+            print("Failed to save tops:", error)
         }
     }
 }
