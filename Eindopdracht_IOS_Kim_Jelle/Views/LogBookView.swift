@@ -38,7 +38,8 @@ struct LogBookView: View {
 
             .onDelete { offsets in
                 Task {
-                    await viewModel.delete(at: offsets)
+                    let actualOffsets = IndexSet(offsets.map { viewModel.tops.count - 1 - $0 })
+                    await viewModel.delete(at: actualOffsets)
                 }
             }
         }
