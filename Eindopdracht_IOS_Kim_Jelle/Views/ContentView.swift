@@ -22,10 +22,9 @@ struct ContentView: View {
             }
             
             NavigationStack {
-                AreaListView()
             }
             .tabItem {
-                Label("Areas", systemImage: "map")
+                Label("Weather", systemImage: "cloud")
             }
         }
         .environmentObject(logbookVM)
