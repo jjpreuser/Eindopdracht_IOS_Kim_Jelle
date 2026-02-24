@@ -22,6 +22,7 @@ struct ContentView: View {
             }
             
             NavigationStack {
+                WeatherView()
             }
             .tabItem {
                 Label("Weather", systemImage: "cloud")
