@@ -7,7 +7,7 @@ struct WeatherResponse: Codable {
 }
 
 struct LiveWeather: Codable, Identifiable {
-    let id = UUID()
+    var id: UUID { UUID() }
     let plaats: String
     let timestamp: Int
     let time: String
@@ -40,7 +40,7 @@ struct LiveWeather: Codable, Identifiable {
 }
 
 struct WeekForecast: Codable, Identifiable {
-    let id = UUID()
+    var id: UUID { UUID() }
     let dag: String
     let image: String
     let max_temp: Int
@@ -56,7 +56,7 @@ struct WeekForecast: Codable, Identifiable {
 }
 
 struct HourlyForecast: Codable, Identifiable {
-    let id = UUID()
+    var id: UUID { UUID() }
     let uur: String
     let timestamp: Int
     let image: String
