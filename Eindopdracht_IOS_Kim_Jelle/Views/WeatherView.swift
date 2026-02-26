@@ -161,18 +161,13 @@ struct WeatherView: View {
         }
     }
 
-    // Return only the "HH:mm" part from uur.
     private func formattedHour(_ uur: String) -> String {
-        // Common patterns:
-        // - "yyyy-MM-dd HH:mm" -> split by space, take last
-        // - "yyyy-MM-dd'T'HH:mm" -> split by "T", take last
         if let idx = uur.lastIndex(of: " ") {
             return String(uur[uur.index(after: idx)...])
         }
         if let idx = uur.lastIndex(of: "T") {
             return String(uur[uur.index(after: idx)...])
         }
-        // Already just time like "14:00"
         return uur
     }
 
